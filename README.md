@@ -1,0 +1,3 @@
+# Parallelisation of Graph Algorithms in Julia
+
+Graph algorithms can have a long runtime, with complexities of up to O(n^3), where n is the number of nodes. In this assignment you will survey existing graph algorithms and their parallel versions in literature. Select at least two of these algorithms and implement them in Julia, a relatively new language. Julia (https://julialang.org/) is a high-performance dynamic programming language with many modern features, which you should describe in your presentation. The implementations' speedups and correctness needs to be evaluated with experimental runs on multicore systems.  
