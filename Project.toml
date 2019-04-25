@@ -1,0 +1,5 @@
+[deps]
+Atom = "c52e3926-4ff0-5f6e-af25-54175e0327b1"
+InstantiateFromURL = "43edad99-fa64-5e4f-9937-1c09a410b73f"
+Juno = "e5e0dc1b-0480-54bc-9374-aad01c23163d"
+PkgTemplates = "14b8a8f1-9102-5b29-a752-f990bacb7fe1"
