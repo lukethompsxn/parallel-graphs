@@ -1,0 +1,4 @@
+language: julia
+sudo: false
+os:
+  - linux
