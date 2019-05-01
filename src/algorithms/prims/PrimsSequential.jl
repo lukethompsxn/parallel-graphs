@@ -32,6 +32,5 @@ while length(mstnodes) != len
 end
 
 writegraph(mst, "graph", "prims-mst")
-println(mst)
 
 
