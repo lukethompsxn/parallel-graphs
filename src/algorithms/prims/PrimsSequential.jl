@@ -31,7 +31,7 @@ while length(mstnodes) != len
     graph[index] = typemax(Int16)
 end
 
-writegraph(mst, "minimum spanning tree (prims)")
+writegraph(mst, "graph", "prims-mst")
 println(mst)
 
 
