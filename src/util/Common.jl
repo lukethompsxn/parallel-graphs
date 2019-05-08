@@ -39,7 +39,8 @@ function writegraph(graph::Array, type::String, graphname::String)
         relation = "->"
     end
 
-    open("[$(type)]-$(graphname).dot", "w") do file
+    if !isdir("out")  mkdir("out") end
+    open("./out/[$(type)]-$(graphname).dot", "w") do file
         write(file, "$(type) $(graphname) {\n")
 
         for index in CartesianIndices(graph)

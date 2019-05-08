@@ -1,6 +1,7 @@
 include("../../util/Common.jl")
 
-graph = parsegraph("/Users/lukethompson/dev/uni/751-Project/res/graphs/[graph]-random-1.dot")
+# graph = parsegraph("C:/Users/gqiao/Documents/SoftEng/Part_IV/Sem1/751/Project/751-Project/res/graphs/[graph]-random-1.dot")
+graph = parsegraph(ARGS[1])
 
 len = 0
 if (length(graph) > 0)
