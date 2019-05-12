@@ -1,3 +1,4 @@
+using BenchmarkTools
 primsPrl = "src/algorithms/prims/PrimsParallel.jl"
 primsSeq = "src/algorithms/prims/PrimsSequential.jl"
 
@@ -5,7 +6,7 @@ dijksPrl = "src/algorithms/dijkstra/DijkstraParallel.jl"
 dijksSeq = "src/algorithms/dijkstra/DijkstraSequential.jl"
 
 algorithm = ""
-file = "res/graphs/[graph]-random-1.dot"
+file = "res/graphs/generated/[graph]-random-1000.dot"
 
 if isdefined(ARGS, 3) file = ARGS[3] end
 

@@ -1,37 +1,62 @@
 include("../../util/Common.jl")
 
-# graph = parsegraph("C:/Users/gqiao/Documents/SoftEng/Part_IV/Sem1/751/Project/751-Project/res/graphs/[graph]-random-1.dot")
-graph = parsegraph(ARGS[1])
 
-len = 0
-if (length(graph) > 0)
-    len = length(graph[1, :])
-end
-nodes = Set(1:len)
+using BenchmarkTools
+using Statistics
 
-mstnodes = Set()
-mst = fill(-1, len, len)
+parsedgraph = parsegraph(ARGS[1])
 
-push!(mstnodes, pop!(nodes))
-while length(mstnodes) != len
-    index = CartesianIndex(first(mstnodes), 1)
-    val = graph[first(mstnodes), 1] #it would be much faster to just add them to a queue
+function prims(g)
+    graph = copy(g)
 
-    for node in mstnodes
-        if minimum(graph[node, :]) < val
-            index = CartesianIndex(node, argmin(graph[node, :]))
-            val = minimum(graph[node, :])
+    len = 0
+    if (length(graph) > 0)
+        len = length(graph[1, :])
+    end
+    nodes = Set(1:len)
+
+    mstnodes = Set()
+    mst = fill(-1, len, len)
+
+    push!(mstnodes, pop!(nodes))
+    while length(mstnodes) != len
+        index = CartesianIndex(first(mstnodes), 1)
+        val = graph[first(mstnodes), 1] #it would be much faster to just add them to a queue
+
+        for node in mstnodes
+            if minimum(graph[node, :]) < val
+                index = CartesianIndex(node, argmin(graph[node, :]))
+                val = minimum(graph[node, :])
+            end
         end
+
+        if (!in(index[2], mstnodes))
+            push!(mstnodes, index[2])
+            mst[index] = val
+            mst[index[2], index[1]] = val
+        end
+        graph[index] = typemax(Int16)
     end
 
-    if (!in(index[2], mstnodes))
-        push!(mstnodes, index[2])
-        mst[index] = val
-        mst[index[2], index[1]] = val
-    end
-    graph[index] = typemax(Int16)
+    return mst
 end
 
-writegraph(mst, "graph", "prims-mst")
+using Dates
 
+println(now())
 
+a = @benchmark prims(parsedgraph) samples=10 seconds=300 gcsample=true
+
+println(now())
+
+# mst = prims(parsedgraph)
+# writegraph(mst, "graph", "prims-mst")
+
+dump(a)
+
+println("min: ", minimum(a))
+println("median: ", median(a))
+println("mean: ", mean(a))
+println("max: ", maximum(a))
+
+println("total seconds: ", sum(a.times) / 1e9)
