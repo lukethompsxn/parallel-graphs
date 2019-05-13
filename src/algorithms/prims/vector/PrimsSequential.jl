@@ -69,7 +69,7 @@ using Dates
 
 println(now())
 
-a = @benchmark prims(parsedgraph) samples=10 seconds=300 gcsample=true
+a = @benchmark prims(parsedgraph) samples=10000 seconds=10
 
 println(now())
 
@@ -81,3 +81,4 @@ println("mean: ", mean(a))
 println("max: ", maximum(a))
 
 println("total seconds: ", sum(a.times) / 1e9)
+println("total samples: ", length(a.times))
