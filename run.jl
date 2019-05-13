@@ -1,6 +1,6 @@
 using BenchmarkTools
 primsPrl = "src/algorithms/prims/PrimsParallel.jl"
-primsSeq = "src/algorithms/prims/PrimsSequential.jl"
+primsSeq = "src/algorithms/prims/vector/PrimsSequential.jl"
 
 dijksPrl = "src/algorithms/dijkstra/DijkstraParallel.jl"
 dijksSeq = "src/algorithms/dijkstra/DijkstraSequential.jl"

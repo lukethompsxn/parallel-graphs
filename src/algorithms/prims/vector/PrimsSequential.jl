@@ -1,10 +1,36 @@
-include("../../util/Common.jl")
+include("../../../util/Common.jl")
 
 
 using BenchmarkTools
 using Statistics
 
 parsedgraph = parsegraph(ARGS[1])
+
+# this can be parallelised with OMP reduction
+function cheapestNode(d, mstNodes)
+    min = typemax(UInt32)
+    nodeInd = -1
+    for i = 1:length(d)
+        if !in(i, mstNodes)
+            if d[i] < min
+                min = d[i]
+                nodeInd = i
+            end
+        end
+    end
+
+    return nodeInd
+end
+
+# this can be parallelised with OMP principles
+function updateVector(newNode, mstNodes, d, addedBy, graph)
+    for i = 1:length(graph[1,:])
+        if !in(i, mstNodes) && graph[newNode, i] != -1 && graph[newNode, i] < d[i]
+            d[i] = graph[newNode, i]
+            addedBy[i] = newNode
+        end
+    end
+end
 
 function prims(g)
     graph = copy(g)
@@ -13,31 +39,24 @@ function prims(g)
     if (length(graph) > 0)
         len = length(graph[1, :])
     end
-    nodes = Set(1:len)
 
-    mstnodes = Set()
+    d = fill(typemax(UInt32), len)
+    addedBy = fill(-1, len)
+    mstNodes = Set()
     mst = fill(-1, len, len)
 
-    push!(mstnodes, pop!(nodes))
-    while length(mstnodes) != len
-        index = CartesianIndex(first(mstnodes), 1)
-        val = graph[first(mstnodes), 1] #it would be much faster to just add them to a queue
+    d[1] = 0
+    push!(mstNodes, 1)
+    updateVector(1, mstNodes, d, addedBy, graph)
+    
+    while length(mstNodes) != len
+        newNode = cheapestNode(d, mstNodes)
+        push!(mstNodes, newNode)
+        updateVector(newNode, mstNodes, d, addedBy, graph)
 
-        for node in mstnodes
-            for i = 1:length(graph[node,:])
-                if graph[node,i] < val
-                    index = CartesianIndex(node, i)
-                    val = graph[node,i]
-                end
-            end
-        end
-
-        if (!in(index[2], mstnodes))
-            push!(mstnodes, index[2])
-            mst[index] = val
-            mst[index[2], index[1]] = val
-        end
-        graph[index] = typemax(Int16)
+        index = CartesianIndex(addedBy[newNode], newNode)
+        mst[index[1], index[2]] = graph[index]
+        mst[index[2], index[1]] = graph[index]
     end
 
     return mst
@@ -45,14 +64,14 @@ end
 
 using Dates
 
+# mst = prims(parsedgraph)
+# writegraph(mst, "graph", "prims-mst")
+
 println(now())
 
 a = @benchmark prims(parsedgraph) samples=10 seconds=300 gcsample=true
 
 println(now())
-
-# mst = prims(parsedgraph)
-# writegraph(mst, "graph", "prims-mst")
 
 dump(a)
 
