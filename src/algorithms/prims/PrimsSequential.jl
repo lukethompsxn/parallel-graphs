@@ -24,9 +24,11 @@ function prims(g)
         val = graph[first(mstnodes), 1] #it would be much faster to just add them to a queue
 
         for node in mstnodes
-            if minimum(graph[node, :]) < val
-                index = CartesianIndex(node, argmin(graph[node, :]))
-                val = minimum(graph[node, :])
+            for i = 1:length(graph[node,:])
+                if graph[node,i] < val
+                    index = CartesianIndex(node, i)
+                    val = graph[node,i]
+                end
             end
         end
 
