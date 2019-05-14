@@ -1,11 +1,3 @@
-include("../../../util/Common.jl")
-
-
-using BenchmarkTools
-using Statistics
-
-parsedgraph = parsegraph(ARGS[1])
-
 # this can be parallelised with OMP reduction
 function cheapestNode(d, mstNodes)
     min = typemax(UInt32)
@@ -61,24 +53,3 @@ function prims(g)
 
     return mst
 end
-
-using Dates
-
-# mst = prims(parsedgraph)
-# writegraph(mst, "graph", "prims-mst")
-
-println(now())
-
-a = @benchmark prims(parsedgraph) samples=10000 seconds=10
-
-println(now())
-
-dump(a)
-
-println("min: ", minimum(a))
-println("median: ", median(a))
-println("mean: ", mean(a))
-println("max: ", maximum(a))
-
-println("total seconds: ", sum(a.times) / 1e9)
-println("total samples: ", length(a.times))
