@@ -2,7 +2,6 @@ using Distributed
 using SharedArrays
 
 function cheapestNodeP(distanceVector, mstNodes)
-    # distances = Array(copy(distanceVector))
     mincost = typemax(UInt32)
     nodeInd = -1
     cheapest = @distributed min for i = 1:length(distanceVector)
@@ -27,8 +26,9 @@ function updateVectorP(newNode, mstNodes, distanceVector, addedBy, graph)
     end
 end
 
-function prims(g)
-    graph = copy(g)
+function primsP(g)
+    # graph = copy(g)
+    graph = g
     
     len = 0
     if (length(graph) > 0)
@@ -39,8 +39,6 @@ function prims(g)
     
     dist = SharedArray(fill(typemax(UInt32), len))
     addedBy = SharedArray(fill(-1, len))
-    # dist = fill(typemax(UInt32), len)
-    # addedBy = fill(-1, len)
     
     mstNodes = Set()
     mst = fill(-1, len, len)
@@ -53,13 +51,13 @@ function prims(g)
         newNode = cheapestNodeP(dist, mstNodes)
         push!(mstNodes, newNode)
         updateVectorP(newNode, mstNodes, dist, addedBy, graph)
-        print(length(mstNodes), "/", len, " : ", newNode, " = ")
+        # print(length(mstNodes), "/", len, " : ", newNode, " = ")
 
         index = CartesianIndex(addedBy[newNode], newNode)
         mst[index[1], index[2]] = graph[index]
         mst[index[2], index[1]] = graph[index]
 
-        println(length(mstNodes) < len)
+        # println(length(mstNodes) < len)
     end
 
     return mst
