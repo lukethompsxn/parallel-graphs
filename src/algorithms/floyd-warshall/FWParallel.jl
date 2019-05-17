@@ -1,21 +1,7 @@
 include("../../util/Common.jl")
 
-function fws(g)
+function fwp(g)
     graph = copy(g)
-
-    len = 0
-    if (length(graph) > 0)
-        len = length(graph[1, :])
-    end
-
-    for k = 1:len
-        for i = 1:len
-            for j = 1:len
-                graph[i,j] = update(graph[i,j], graph[i,k], graph[k,j])
-            end
-        end
-    end
-
     writegraph(graph, "digraph", "floyd-warshall")
 end
 

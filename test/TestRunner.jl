@@ -1,24 +1,26 @@
 include("../src/util/Common.jl")
 include("../src/algorithms/floyd-warshall/FWSequential.jl")
+include("../src/algorithms/floyd-warshall/FWParallel.jl")
+import Base.FileSystem
 
 # <-- Prims Tests -->
 
 # <-- Floyd Warshall Tests -->
 function fwtests()
-    parsedgraph = parsegraph("/Users/lukethompson/dev/uni/751-Project/res/graphs/[digraph]-simple-1.dot")
-    # Sequential
-    floydwarshall(parsedgraph)
+    for (root, dirs, files) in walkdir("res/digraphs/")
+        for file in files
+            # Sequential
+            fws(parsegraph(("$(root)/$(file)")))
+            verify("out/[digraph]-floyd-warshall.dot", "test/output/floyd-warshall/$(file)", "$(file) (Sequential)")
 
-    if verify("/Users/lukethompson/dev/uni/751-Project/out/[digraph]-floyd-warshall.dot", "/Users/lukethompson/dev/uni/751-Project/test/output/[digraph]-floyd-warshall-[digraph]-simple-1.dot")
-        println("Tests Pass")
-    else
-        println("Tests Failed")
+            # Parallel
+            fwp(parsegraph(("$(root)/$(file)")))
+            verify("out/[digraph]-floyd-warshall.dot", "test/output/floyd-warshall/$(file)", "$(file) (Parallel)")
+        end
     end
-    # Parallel
-
 end
 
-function verify(outputpath, testpath)
+function verify(outputpath, testpath, file)
     output = nothing
     test = nothing
 
@@ -30,7 +32,11 @@ function verify(outputpath, testpath)
         test = read(file, String)
     end
 
-    return output == test
+    if output == test
+        println("Test Pass - $(file)")
+    else
+        println("Test Failure - $(file)")
+    end
 end
 
 fwtests()
