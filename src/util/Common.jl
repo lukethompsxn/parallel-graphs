@@ -1,12 +1,12 @@
 # note: this is a draft testing implementation and will need to be brought in line with dot specification
 function parsegraph(path::String)
     integer = Int16
-    graph = []
+    graph = nothing
 
     # fix implementation to not require reading file twice
     open(path) do file
         count = length(collect(eachmatch(r"[0-9]{1,};", read(file, String))))
-        graph = fill(typemax(integer), count, count)
+        graph = Array{Union{integer, Nothing}}(nothing, count, count)
     end
 
     open(path) do file
@@ -46,8 +46,9 @@ function writegraph(graph::Array, type::String, graphname::String)
         for index in CartesianIndices(graph)
             index = CartesianIndex(index[2], index[1]) # find better way so we dont need to swap these
 
-            if (graph[index] != -1)
-                write(file, "\t$(index[1]) $(relation) $(index[2])\t[Weight=$(graph[index])];\n")
+            if (graph[index] != -1 && index[1] != index[2])
+                weight = graph[index] != nothing ? graph[index] : "INF"
+                write(file, "\t$(index[1]) $(relation) $(index[2])\t[Weight=$(weight)];\n")
 
                 # dont need to represent the edge twice in graph
                 if (type == "graph")

@@ -1,0 +1,12 @@
+digraph "simple-1" {
+	1;
+	2;
+	3;
+	4;
+	5;
+	1 -> 2	[Weight=9];
+	1 -> 4	[Weight=2];
+	2 -> 3	[Weight=8];
+	2 -> 5	[Weight=3];
+	4 -> 5	[Weight=6];
+}
