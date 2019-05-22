@@ -1,4 +1,4 @@
-n = 1000
+n = parse(Int64, ARGS[1])
 
 nodes = []
 edges = []

@@ -1,4 +1,4 @@
-include("../../util/Common.jl")
+include("../../../util/Common.jl")
 
 
 using BenchmarkTools
@@ -47,18 +47,20 @@ using Dates
 
 println(now())
 
-a = @benchmark prims(parsedgraph) samples=10 seconds=300 gcsample=true
+# a = @benchmark prims(parsedgraph) samples=10 seconds=300 gcsample=true
+
+prims(parsedgraph)
 
 println(now())
 
 # mst = prims(parsedgraph)
 # writegraph(mst, "graph", "prims-mst")
 
-dump(a)
+# dump(a)
 
-println("min: ", minimum(a))
-println("median: ", median(a))
-println("mean: ", mean(a))
-println("max: ", maximum(a))
+# println("min: ", minimum(a))
+# println("median: ", median(a))
+# println("mean: ", mean(a))
+# println("max: ", maximum(a))
 
-println("total seconds: ", sum(a.times) / 1e9)
+# println("total seconds: ", sum(a.times) / 1e9)

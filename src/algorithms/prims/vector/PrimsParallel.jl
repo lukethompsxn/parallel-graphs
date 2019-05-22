@@ -1,61 +1,64 @@
-include("../../util/Common.jl")
+using Distributed
+using SharedArrays
 
-using BenchmarkTools
-using Statistics
+function cheapestNodeP(distanceVector, mstNodes)
+    mincost = typemax(UInt32)
+    nodeInd = -1
+    cheapest = @distributed min for i = 1:length(distanceVector)
+        if !in(i, mstNodes)
+            if distanceVector[i] < mincost
+                mincost = distanceVector[i]
+                nodeInd = i
+            end
+        end
+        (mincost, nodeInd)
+    end
 
-parsedgraph = parsegraph(ARGS[1])
+    return cheapest[2]
+end
 
-function prims(g)
-    graph = copy(g)
+function updateVectorP(newNode, mstNodes, distanceVector, addedBy, graph)
+    @sync @distributed for i = 1:length(graph[1,:])
+        if !in(i, mstNodes) && graph[newNode, i] != -1 && graph[newNode, i] < distanceVector[i]
+            distanceVector[i] = graph[newNode, i]
+            addedBy[i] = newNode
+        end
+    end
+end
 
+function primsP(g)
+    # graph = copy(g)
+    graph = g
+    
     len = 0
     if (length(graph) > 0)
         len = length(graph[1, :])
     end
-    nodes = Set(1:len)
-
-    mstnodes = Set()
+    
+    addprocs(4)
+    
+    dist = SharedArray(fill(typemax(UInt32), len))
+    addedBy = SharedArray(fill(-1, len))
+    
+    mstNodes = Set()
     mst = fill(-1, len, len)
+    
+    dist[1] = 0
+    push!(mstNodes, 1)
+    updateVectorP(1, mstNodes, dist, addedBy, graph)
 
-    push!(mstnodes, pop!(nodes))
-    while length(mstnodes) != len
-        index = CartesianIndex(first(mstnodes), 1)
-        val = graph[first(mstnodes), 1] #it would be much faster to just add them to a queue
+    while length(mstNodes) < len
+        newNode = cheapestNodeP(dist, mstNodes)
+        push!(mstNodes, newNode)
+        updateVectorP(newNode, mstNodes, dist, addedBy, graph)
+        # print(length(mstNodes), "/", len, " : ", newNode, " = ")
 
-        for node in mstnodes
-            min = minimum(graph[node, :])
-            if  min < val
-                index = CartesianIndex(node, argmin(graph[node, :]))
-                val = min
-            end
-        end
+        index = CartesianIndex(addedBy[newNode], newNode)
+        mst[index[1], index[2]] = graph[index]
+        mst[index[2], index[1]] = graph[index]
 
-        if (!in(index[2], mstnodes))
-            push!(mstnodes, index[2])
-            mst[index] = val
-            mst[index[2], index[1]] = val
-        end
-        graph[index] = typemax(Int16)
+        # println(length(mstNodes) < len)
     end
+
     return mst
 end
-
-using Dates
-
-println(now())
-
-a = @benchmark prims(parsedgraph) samples=10 seconds=300 gcsample=true
-
-println(now())
-
-# mst = prims(parsedgraph)
-# writegraph(mst, "graph", "prims-mst")
-
-dump(a)
-
-println("min: ", minimum(a))
-println("median: ", median(a))
-println("mean: ", mean(a))
-println("max: ", maximum(a))
-
-println("total seconds: ", sum(a.times) / 1e9)

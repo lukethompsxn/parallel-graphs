@@ -1,13 +1,10 @@
-# this can be parallelised with OMP reduction
-function cheapestNode(d, mstNodes)
+function cheapestNodeN(d, nodes)
     min = typemax(UInt32)
     nodeInd = -1
-    for i = 1:length(d)
-        if !in(i, mstNodes)
-            if d[i] < min
-                min = d[i]
-                nodeInd = i
-            end
+    for i in nodes
+        if d[i] < min
+            min = d[i]
+            nodeInd = i
         end
     end
 
@@ -15,16 +12,16 @@ function cheapestNode(d, mstNodes)
 end
 
 # this can be parallelised with OMP principles
-function updateVector(newNode, mstNodes, d, addedBy, graph)
+function updateVectorN(newNode, nodes, d, addedBy, graph)
     for i = 1:length(graph[1,:])
-        if !in(i, mstNodes) && graph[newNode, i] != -1 && graph[newNode, i] < d[i]
+        if in(i, nodes) && graph[newNode, i] != -1 && graph[newNode, i] < d[i]
             d[i] = graph[newNode, i]
             addedBy[i] = newNode
         end
     end
 end
 
-function prims(g)
+function primsN(g)
     # graph = copy(g)
     graph = g
 
@@ -35,17 +32,17 @@ function prims(g)
 
     d = fill(typemax(UInt32), len)
     addedBy = fill(-1, len)
-    mstNodes = Set()
+    nodes = Set(1:len)
     mst = fill(-1, len, len)
 
     d[1] = 0
-    push!(mstNodes, 1)
-    updateVector(1, mstNodes, d, addedBy, graph)
+    delete!(nodes, 1)
+    updateVectorN(1, nodes, d, addedBy, graph)
     
-    while length(mstNodes) != len
-        newNode = cheapestNode(d, mstNodes)
-        push!(mstNodes, newNode)
-        updateVector(newNode, mstNodes, d, addedBy, graph)
+    while length(nodes) > 0
+        newNode = cheapestNodeN(d, nodes)
+        delete!(nodes, newNode)
+        updateVectorN(newNode, nodes, d, addedBy, graph)
 
         index = CartesianIndex(addedBy[newNode], newNode)
         mst[index[1], index[2]] = graph[index]
