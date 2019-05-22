@@ -1,8 +1,7 @@
 include("../../util/Common.jl")
 
 function fwp(g)
-    graph = copy(g)
-    writegraph(graph, "digraph", "floyd-warshall")
+    return g
 end
 
 function update(ij, ik, kj)

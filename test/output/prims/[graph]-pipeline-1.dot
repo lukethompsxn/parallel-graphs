@@ -1,0 +1,22 @@
+graph prims {
+	1 -- 4	[Weight=2];
+	2 -- 5	[Weight=3];
+	3 -- 6	[Weight=6];
+	4 -- 5	[Weight=6];
+	5 -- 6	[Weight=2];
+	5 -- 8	[Weight=4];
+	6 -- 9	[Weight=7];
+	7 -- 8	[Weight=6];
+	7 -- 10	[Weight=4];
+	8 -- 11	[Weight=4];
+	9 -- 12	[Weight=7];
+	10 -- 13	[Weight=6];
+	13 -- 14	[Weight=6];
+	14 -- 15	[Weight=2];
+	15 -- 18	[Weight=8];
+	16 -- 19	[Weight=6];
+	17 -- 18	[Weight=2];
+	17 -- 20	[Weight=7];
+	18 -- 21	[Weight=6];
+	19 -- 20	[Weight=6];
+}

@@ -26,8 +26,7 @@ function updateVectorP(newNode, mstNodes, distanceVector, addedBy, graph)
     end
 end
 
-function primsP(g)
-    # graph = copy(g)
+function vector_prims_parallel(g)
     graph = g
     
     len = 0
@@ -51,13 +50,10 @@ function primsP(g)
         newNode = cheapestNodeP(dist, mstNodes)
         push!(mstNodes, newNode)
         updateVectorP(newNode, mstNodes, dist, addedBy, graph)
-        # print(length(mstNodes), "/", len, " : ", newNode, " = ")
 
         index = CartesianIndex(addedBy[newNode], newNode)
         mst[index[1], index[2]] = graph[index]
         mst[index[2], index[1]] = graph[index]
-
-        # println(length(mstNodes) < len)
     end
 
     return mst

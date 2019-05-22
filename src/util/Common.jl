@@ -1,14 +1,28 @@
-# note: this is a draft testing implementation and will need to be brought in line with dot specification
-function parsegraph(path::String)
+function parseprims(path::String)
     integer = Int16
     graph = nothing
 
-    # fix implementation to not require reading file twice
+    open(path) do file
+        count = length(collect(eachmatch(r"[0-9]{1,};", read(file, String))))
+        graph = fill(typemax(integer), count, count)
+    end
+
+    return parsegraph(graph, integer, path)
+end
+
+function parsefloyd(path::String)
+    integer = Int16
+    graph = nothing
+
     open(path) do file
         count = length(collect(eachmatch(r"[0-9]{1,};", read(file, String))))
         graph = Array{Union{integer, Nothing}}(nothing, count, count)
     end
 
+    return parsegraph(graph, integer, path)
+end
+
+function parsegraph(graph, integer, path::String)
     open(path) do file
         for line in eachline(file)
             if (occursin(" -> ", line)) # directed edge
@@ -30,7 +44,6 @@ function parsegraph(path::String)
     end
 end
 
-# note: this is a draft testing implementation and will need to be brought in line with dot specification
 function writegraph(graph::Array, type::String, graphname::String)
     relation = ""
     if (type == "graph")

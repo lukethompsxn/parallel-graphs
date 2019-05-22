@@ -16,7 +16,7 @@ function fws(g)
         end
     end
 
-    writegraph(graph, "digraph", "floyd-warshall")
+    return graph
 end
 
 function update(ij, ik, kj)

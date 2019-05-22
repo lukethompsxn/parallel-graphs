@@ -1,20 +1,59 @@
 include("../src/util/Common.jl")
 include("../src/algorithms/floyd-warshall/FWSequential.jl")
 include("../src/algorithms/floyd-warshall/FWParallel.jl")
-import Base.FileSystem
+include("../src/algorithms/prims/nested/PrimsSequential.jl")
+include("../src/algorithms/prims/nested/PrimsParallel.jl")
+include("../src/algorithms/prims/vector/PrimsSequential.jl")
+include("../src/algorithms/prims/vector/PrimsParallel.jl")
+include("../src/algorithms/prims/vector/PrimsSequentialNodes.jl")
+include("../src/algorithms/prims/vector/PrimsParallelNodes.jl")
+
+failed = 0
+total = 0
 
 # <-- Prims Tests -->
+function primstests()
+    println("\n#### Testing Prims Algorithm ####")
+    for (root, dirs, files) in walkdir("res/graphs/")
+        for file in files
+            # Nested Prims Sequential
+            writegraph(nested_prims_sequential(parseprims(("$(root)/$(file)"))), "graph", "prims")
+            verify("out/[graph]-prims.dot", "test/output/prims/$(file)", "$(file) (Nested Sequential)")
+
+            # Nested Prims Parallel
+            writegraph(nested_prims_parallel(parseprims(("$(root)/$(file)"))), "graph", "prims")
+            verify("out/[graph]-prims.dot", "test/output/prims/$(file)", "$(file) (Nested Parallel)")
+
+            # Vector Prims Sequential
+            writegraph(vector_prims_sequential(parseprims(("$(root)/$(file)"))), "graph", "prims")
+            verify("out/[graph]-prims.dot", "test/output/prims/$(file)", "$(file) (Vector Sequential)")
+
+            # Vector Prims Parallel
+            writegraph(vector_prims_parallel(parseprims(("$(root)/$(file)"))), "graph", "prims")
+            verify("out/[graph]-prims.dot", "test/output/prims/$(file)", "$(file) (Vector Parallel)")
+
+            # Vector Prims Sequential Nodes
+            writegraph(vector_prims_sequential_nodes(parseprims(("$(root)/$(file)"))), "graph", "prims")
+            verify("out/[graph]-prims.dot", "test/output/prims/$(file)", "$(file) (Vector Sequential Nodes)")
+
+            # Vector Prims Parallel Nodes
+            writegraph(vector_prims_parallel_nodes(parseprims(("$(root)/$(file)"))), "graph", "prims")
+            verify("out/[graph]-prims.dot", "test/output/prims/$(file)", "$(file) (Vector Parallel Nodes)")
+        end
+    end
+end
 
 # <-- Floyd Warshall Tests -->
 function fwtests()
+    println("\n#### Testing Floyd Warshall Algorithm ####")
     for (root, dirs, files) in walkdir("res/digraphs/")
         for file in files
             # Sequential
-            fws(parsegraph(("$(root)/$(file)")))
+            writegraph(fws(parsefloyd(("$(root)/$(file)"))), "digraph", "floyd-warshall")
             verify("out/[digraph]-floyd-warshall.dot", "test/output/floyd-warshall/$(file)", "$(file) (Sequential)")
 
             # Parallel
-            fwp(parsegraph(("$(root)/$(file)")))
+            writegraph(fwp(parsefloyd(("$(root)/$(file)"))), "digraph", "floyd-warshall")
             verify("out/[digraph]-floyd-warshall.dot", "test/output/floyd-warshall/$(file)", "$(file) (Parallel)")
         end
     end
@@ -32,11 +71,16 @@ function verify(outputpath, testpath, file)
         test = read(file, String)
     end
 
+    global total += 1
+
     if output == test
         println("Test Pass - $(file)")
     else
-        println("Test Failure - $(file)")
+        println("Test Fail - $(file)")
+        global failed += 1
     end
 end
 
+primstests()
 fwtests()
+println("\n##### RESULTS #####\n$(failed) tests failed out of $(total) tests")

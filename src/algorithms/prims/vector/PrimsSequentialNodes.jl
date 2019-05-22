@@ -11,7 +11,6 @@ function cheapestNodeN(d, nodes)
     return nodeInd
 end
 
-# this can be parallelised with OMP principles
 function updateVectorN(newNode, nodes, d, addedBy, graph)
     for i = 1:length(graph[1,:])
         if in(i, nodes) && graph[newNode, i] != -1 && graph[newNode, i] < d[i]
@@ -21,8 +20,7 @@ function updateVectorN(newNode, nodes, d, addedBy, graph)
     end
 end
 
-function primsN(g)
-    # graph = copy(g)
+function vector_prims_sequential_nodes(g)
     graph = g
 
     len = 0

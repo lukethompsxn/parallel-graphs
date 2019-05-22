@@ -1,12 +1,6 @@
 include("../../../util/Common.jl")
 
-
-using BenchmarkTools
-using Statistics
-
-parsedgraph = parsegraph(ARGS[1])
-
-function prims(g)
+function nested_prims_sequential(g)
     graph = copy(g)
 
     len = 0
@@ -21,7 +15,7 @@ function prims(g)
     push!(mstnodes, pop!(nodes))
     while length(mstnodes) != len
         index = CartesianIndex(first(mstnodes), 1)
-        val = graph[first(mstnodes), 1] #it would be much faster to just add them to a queue
+        val = graph[first(mstnodes), 1]
 
         for node in mstnodes
             for i = 1:length(graph[node,:])
@@ -42,25 +36,3 @@ function prims(g)
 
     return mst
 end
-
-using Dates
-
-println(now())
-
-# a = @benchmark prims(parsedgraph) samples=10 seconds=300 gcsample=true
-
-prims(parsedgraph)
-
-println(now())
-
-# mst = prims(parsedgraph)
-# writegraph(mst, "graph", "prims-mst")
-
-# dump(a)
-
-# println("min: ", minimum(a))
-# println("median: ", median(a))
-# println("mean: ", mean(a))
-# println("max: ", maximum(a))
-
-# println("total seconds: ", sum(a.times) / 1e9)

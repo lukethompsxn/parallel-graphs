@@ -18,8 +18,7 @@ function updateVectorPN(newNode, nodes, distanceVector, addedBy, graph)
     end
 end
 
-function primsPN(g)
-    # graph = copy(g)
+function vector_prims_parallel_nodes(g)
     graph = g
     
     len = 0
@@ -45,13 +44,9 @@ function primsPN(g)
         delete!(nodes, newNode)
         updateVectorPN(newNode, nodes, dist, addedBy, graph)
 
-        # print(length(nodes), "/", len, " : ", newNode, " = ")
-
         index = CartesianIndex(addedBy[newNode], newNode)
         mst[index[1], index[2]] = graph[index]
         mst[index[2], index[1]] = graph[index]
-
-        # println(length(nodes) > 0)
     end
 
     return mst

@@ -1,4 +1,3 @@
-# this can be parallelised with OMP reduction
 function cheapestNode(d, mstNodes)
     min = typemax(UInt32)
     nodeInd = -1
@@ -14,7 +13,6 @@ function cheapestNode(d, mstNodes)
     return nodeInd
 end
 
-# this can be parallelised with OMP principles
 function updateVector(newNode, mstNodes, d, addedBy, graph)
     for i = 1:length(graph[1,:])
         if !in(i, mstNodes) && graph[newNode, i] != -1 && graph[newNode, i] < d[i]
@@ -24,8 +22,7 @@ function updateVector(newNode, mstNodes, d, addedBy, graph)
     end
 end
 
-function prims(g)
-    # graph = copy(g)
+function vector_prims_sequential(g)
     graph = g
 
     len = 0
