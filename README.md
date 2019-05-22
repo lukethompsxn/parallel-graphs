@@ -1,4 +1,4 @@
-# Parallelisation of Graph Algorithms in Julia [![Build Status](https://travis-ci.com/lukethompsxn/751-Project.svg?token=gDeffs2syumfbfyPNXfM&branch=master)](https://travis-ci.com/lukethompsxn/751-Project)
+# Parallelisation of Graph Algorithms in Julia
 
 This project provides parallel graph algorithm implementations in Julia. To run any of the algorithms, please first install [Julia](https://julialang.org/downloads/). Once installed, launch into julia by running the executable, or alternatively launch julia from terminal `exec '/Applications/Julia-1.1.app/Contents/Resources/julia/bin/julia'` _Note: this is the path on macOS, linux and windows will be different._
 
