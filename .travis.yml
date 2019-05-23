@@ -6,4 +6,4 @@ notifications:
   email: false
 
 script:
-  - julia -e 'Pkg.test("PkgName",coverage=true)'
+  - julia -e 'Pkg.test("751-Project",coverage=true)'
