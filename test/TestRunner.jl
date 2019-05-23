@@ -54,8 +54,8 @@ function fwtests()
             verify("out/[digraph]-floyd-warshall.dot", "test/output/floyd-warshall/$(file)", "$(file) (Sequential)", "floyd")
 
             # Parallel
-            writegraph(fwp(parsefloyd(("$(root)/$(file)"))), "digraph", "floyd-warshall")
-            verify("out/[digraph]-floyd-warshall.dot", "test/output/floyd-warshall/$(file)", "$(file) (Parallel)", "floyd")
+            #writegraph(fwp(parsefloyd(("$(root)/$(file)"))), "digraph", "floyd-warshall")
+            #verify("out/[digraph]-floyd-warshall.dot", "test/output/floyd-warshall/$(file)", "$(file) (Parallel)", "floyd")
         end
     end
 end
@@ -130,3 +130,4 @@ end
 primstests()
 fwtests()
 println("\n##### RESULTS #####\n$(failed) tests failed out of $(total) tests")
+return failed > 0 ? 1 : 0

@@ -4,3 +4,6 @@ os:
   - linux
 notifications:
   email: false
+
+script:
+  - julia -e 'Pkg.test("PkgName",coverage=true)'
