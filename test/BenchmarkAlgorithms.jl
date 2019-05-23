@@ -4,10 +4,12 @@ using Dates
 
 include("../src/util/Common.jl")
 
-include("../src/algorithms/prims/vector/PrimsSequential.jl")
-include("../src/algorithms/prims/vector/PrimsSequentialNodes.jl")
-include("../src/algorithms/prims/vector/PrimsParallel.jl")
-include("../src/algorithms/prims/vector/PrimsParallelNodes.jl")
+# include("../src/algorithms/prims/vector/PrimsSequential.jl")
+# include("../src/algorithms/prims/vector/PrimsSequentialNodes.jl")
+# include("../src/algorithms/prims/vector/PrimsParallel.jl")
+# include("../src/algorithms/prims/vector/PrimsParallelNodes.jl")
+include("../src/algorithms/floyd-warshall/FWParallel.jl")
+include("../src/algorithms/floyd-warshall/FWSequential.jl")
 
 function printResults(trial)
     dump(trial)
@@ -21,15 +23,17 @@ function printResults(trial)
     println("total samples: ", length(trial.times))
 end
 
-graph = parsegraph(ARGS[1])
+graph = parsefloyd(ARGS[1])
 
-println(now())
+# sequential = @benchmark fws(graph) samples=50 seconds=120 evals=1
 
-# sequential = @benchmark prims(graph) samples=50 seconds=120 evals=1
+start = now()
+fws(graph)
+println("sequential finished in ", now() - start)
 
-# println(now())
-# printResults(sequential)
-# println(now())
+start = now()
+fwp(graph)
+println("parallel finished in ", now() - start)
 
 # sequentialNodes = @benchmark primsN(graph) samples=50 seconds=120 evals=1
 
@@ -37,11 +41,9 @@ println(now())
 # printResults(sequentialNodes)
 # println(now())
 
-# parallel = @benchmark primsP(graph) samples=50 seconds=120 evals=1
+# parallel = @benchmark fwp(graph) samples=50 seconds=120 evals=1
 
-# println(now())
-# printResults(parallel)
-# println(now())
+
 
 # parallelNodes = @benchmark primsPN(graph) samples=50 seconds=120 evals=1
 

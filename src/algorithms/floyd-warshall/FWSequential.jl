@@ -1,6 +1,7 @@
 include("../../util/Common.jl")
 
 function fws(g)
+    println("running sequential")
     graph = copy(g)
 
     len = 0
