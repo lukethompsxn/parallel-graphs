@@ -41,6 +41,3 @@ function fwParallelDistributed(g)
 
     return graph
 end
-
-
-

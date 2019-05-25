@@ -1,7 +1,6 @@
 include("../../util/Common.jl")
 
 function fws(g)
-    println("running sequential")
     graph = copy(g)
 
     len = 0
@@ -21,11 +20,11 @@ function fws(g)
 end
 
 function update(ij, ik, kj)
-    if ik == nothing || kj == nothing
+    if ik == 0 || kj == 0
         return ij
     end
 
-    if ij == nothing
+    if ij == 0
         return ik + kj
     end
 

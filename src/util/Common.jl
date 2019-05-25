@@ -72,7 +72,7 @@ function writegraph(graph::Array, type::String, graphname::String)
             index = CartesianIndex(index[2], index[1]) # find better way so we dont need to swap these
 
             if (graph[index] != -1 && index[1] != index[2])
-                weight = graph[index] != nothing ? graph[index] : "INF"
+                weight = graph[index] != 0 ? graph[index] : "INF"
                 write(file, "\t$(index[1]) $(relation) $(index[2])\t[Weight=$(weight)];\n")
 
                 # dont need to represent the edge twice in graph
