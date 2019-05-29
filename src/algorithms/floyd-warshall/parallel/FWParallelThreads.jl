@@ -4,7 +4,6 @@ include("../../../util/Common.jl")
 # See: https://docs.julialang.org/en/v1.0/manual/environment-variables/#JULIA_NUM_THREADS-1
 
 function fwp(g)
-    println("running parallel with ", Threads.nthreads(), " threads")
     graph = copy(g)
 
     len = 0
