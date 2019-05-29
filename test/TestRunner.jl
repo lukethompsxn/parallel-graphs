@@ -1,6 +1,6 @@
 include("../src/util/Common.jl")
 include("../src/algorithms/floyd-warshall/FWSequential.jl")
-include("../src/algorithms/floyd-warshall/FWParallel.jl")
+include("../src/algorithms/floyd-warshall/parallel/FWParallelThreads.jl")
 include("../src/algorithms/prims/nested/PrimsSequential.jl")
 include("../src/algorithms/prims/nested/PrimsParallel.jl")
 include("../src/algorithms/prims/vector/PrimsSequential.jl")
@@ -127,7 +127,7 @@ function verifynodesandcost(outputpath, testpath, file)
 end
 
 
-primstests()
+#primstests()
 fwtests()
 println("\n##### RESULTS #####\n$(failed) tests failed out of $(total) tests")
 return failed > 0 ? 1 : 0

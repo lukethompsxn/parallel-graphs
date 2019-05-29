@@ -20,16 +20,16 @@ function fws(g)
 end
 
 function update(ij, ik, kj)
-    if ik == nothing || kj == nothing
+    if ik == 0 || kj == 0
         return ij
     end
 
-    if ij == nothing
+    if ij == 0
         return ik + kj
     end
 
     return minimum([ij, ik + kj])
 end
 
-
+# @time fws(parsefloyd("/Users/lukethompson/dev/uni/751-Project/res/generated/[digraph]-random-1000.dot"))
 

@@ -16,7 +16,7 @@ function parsefloyd(path::String)
 
     open(path) do file
         count = length(collect(eachmatch(r"[0-9]{1,};", read(file, String))))
-        graph = Array{Union{typeint, Nothing}}(nothing, count, count)
+        graph = zeros(typeint, count, count)
     end
 
     return parsegraph(graph, typeint, path)
@@ -29,14 +29,26 @@ function parsegraph(graph, typeint, path::String)
                 m = eachmatch(r"[0-9]{1,}", line)
                 vals = collect(m)
                 if (length(vals) == 3)
-                    graph[parse(typeint, vals[1].match), parse(typeint, vals[2].match)] = parse(typeint, vals[3].match)
+                    i = parse(typeint, vals[1].match)
+                    j = parse(typeint, vals[2].match)
+                    val = parse(typeint, vals[3].match)
+                    if (val == nothing)
+                        val = 0
+                    end
+                    graph[i, j] = val
                 end
             elseif (occursin(" -- ", line)) # undirected edge
                 m = eachmatch(r"[0-9]{1,}", line)
                 vals = collect(m)
                 if (length(vals) == 3)
-                    graph[parse(typeint, vals[1].match), parse(typeint, vals[2].match)] = parse(typeint, vals[3].match)
-                    graph[parse(typeint, vals[2].match), parse(typeint, vals[1].match)] = parse(typeint, vals[3].match)
+                    i = parse(typeint, vals[1].match)
+                    j = parse(typeint, vals[2].match)
+                    val = parse(typeint, vals[3].match)
+                    if (val == nothing)
+                        val = 0
+                    end
+                    graph[i, j] = val
+                    graph[j, i] = val
                 end
             end
         end
@@ -60,7 +72,7 @@ function writegraph(graph::Array, type::String, graphname::String)
             index = CartesianIndex(index[2], index[1]) # find better way so we dont need to swap these
 
             if (graph[index] != -1 && index[1] != index[2])
-                weight = graph[index] != nothing ? graph[index] : "INF"
+                weight = graph[index] != 0 ? graph[index] : "INF"
                 write(file, "\t$(index[1]) $(relation) $(index[2])\t[Weight=$(weight)];\n")
 
                 # dont need to represent the edge twice in graph
