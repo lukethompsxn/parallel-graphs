@@ -31,5 +31,5 @@ function update(ij, ik, kj)
     return minimum([ij, ik + kj])
 end
 
-
+# @time fws(parsefloyd("/Users/lukethompson/dev/uni/751-Project/res/generated/[digraph]-random-1000.dot"))
 

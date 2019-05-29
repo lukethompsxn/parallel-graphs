@@ -1,6 +1,6 @@
 include("../src/util/Common.jl")
 include("../src/algorithms/floyd-warshall/FWSequential.jl")
-include("../src/algorithms/floyd-warshall/parallel/FWParallelDistributed.jl")
+include("../src/algorithms/floyd-warshall/parallel/FWParallelThreads.jl")
 include("../src/algorithms/prims/nested/PrimsSequential.jl")
 include("../src/algorithms/prims/nested/PrimsParallel.jl")
 include("../src/algorithms/prims/vector/PrimsSequential.jl")
@@ -54,7 +54,7 @@ function fwtests()
             verify("out/[digraph]-floyd-warshall.dot", "test/output/floyd-warshall/$(file)", "$(file) (Sequential)", "floyd")
 
             # Parallel
-            writegraph(fwParallelDistributed(parsefloyd(("$(root)/$(file)"))), "digraph", "floyd-warshall")
+            writegraph(fwp(parsefloyd(("$(root)/$(file)"))), "digraph", "floyd-warshall")
             verify("out/[digraph]-floyd-warshall.dot", "test/output/floyd-warshall/$(file)", "$(file) (Parallel)", "floyd")
         end
     end
