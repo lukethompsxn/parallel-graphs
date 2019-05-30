@@ -72,6 +72,10 @@ function verify(outputpath, testpath, file, algorithm)
         test = read(file, String)
     end
 
+    if Sys.iswindows()
+        test = replace(test, r"\r\n?|\n" => "\n")
+    end
+
     global total += 1
 
     if output == test
@@ -127,7 +131,7 @@ function verifynodesandcost(outputpath, testpath, file)
 end
 
 
-#primstests()
+primstests()
 fwtests()
 println("\n##### RESULTS #####\n$(failed) tests failed out of $(total) tests")
 return failed > 0 ? 1 : 0
