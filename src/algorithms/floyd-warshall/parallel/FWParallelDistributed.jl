@@ -39,5 +39,7 @@ function fwParallelDistributed(g)
         end
     end
 
+    rmprocs(workers())
+
     return graph
 end
