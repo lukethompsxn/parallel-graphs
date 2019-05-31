@@ -13,7 +13,7 @@ include("../src/algorithms/floyd-warshall/parallel/FWParallelDistributed.jl")
 include("../src/algorithms/floyd-warshall/FWSequential.jl")
 
 function printResults(trial, title)
-    println("----------------------------------------\n", title ,"\n")
+    println("----------------------------------------\n$title\n")
     dump(trial)
 
     println("min: ", minimum(trial))

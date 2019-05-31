@@ -13,7 +13,7 @@ for i in 1:n
     end
 end
 
-open("res/graphs/generated/[graph]-random-$n.dot", "w") do file
+open("res/generated/[graph]-random-$n.dot", "w") do file
     write(file, "graph random-$n {\n")
 
     for n in nodes
