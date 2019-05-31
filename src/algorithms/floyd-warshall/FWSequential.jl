@@ -9,9 +9,15 @@ function fws(g)
     end
 
     for k = 1:len
-        for i = 1:len
-            for j = 1:len
-                graph[i,j] = update(graph[i,j], graph[i,k], graph[k,j])
+        for j = 1:len
+            for i = 1:len
+                if graph[i,k] == 0 || graph[k,j] == 0
+                    # do nothing
+                elseif graph[i,j] == 0
+                    graph[i,j] = graph[i,k] + graph[k,j]
+                elseif graph[i,j] > graph[i,k] + graph[k,j]
+                    graph[i,j] = graph[i,k] + graph[k,j]
+                end
             end
         end
     end
@@ -19,17 +25,6 @@ function fws(g)
     return graph
 end
 
-function update(ij, ik, kj)
-    if ik == 0 || kj == 0
-        return ij
-    end
-
-    if ij == 0
-        return ik + kj
-    end
-
-    return minimum([ij, ik + kj])
-end
-
-# @time fws(parsefloyd("/Users/lukethompson/dev/uni/751-Project/res/generated/[digraph]-random-1000.dot"))
+# g = parsefloyd("/Users/lukethompson/dev/uni/751-Project/res/generated/[digraph]-random-1000.dot")
+# @time fws(g)
 
