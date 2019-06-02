@@ -2,6 +2,8 @@
 
 This project provides parallel graph algorithm implementations in Julia. To run any of the algorithms, please first install [Julia](https://julialang.org/downloads/). Once installed, launch into julia by running the executable, or alternatively launch julia from terminal `exec '/Applications/Julia-1.1.app/Contents/Resources/julia/bin/julia'` _Note: this is the path on macOS, linux and windows will be different._ If you wish to run parallel graph algorithms on multiple threads, please specify the `JULIA_NUM_THREADS` environment variable prior to starup. If launching from terminal, this can be done by executing `export JULIA_NUM_THREADS=<num_threads>` where `<num_threads>` is the number of available threads on your system, prior to running launching julia.
 
+The file format for input graphs is the `.dot` format for graphs and digraphs. The output file is the edges (in `.dot` format).
+
 ### Algorithms
 *Prims Algorithm (Sequential and Parallel)*
 - Nested Implementation
