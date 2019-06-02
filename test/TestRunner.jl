@@ -1,6 +1,6 @@
 include("../src/util/Common.jl")
 include("../src/algorithms/floyd-warshall/FWSequential.jl")
-include("../src/algorithms/floyd-warshall/parallel/FWParallelThreads.jl")
+include("../src/algorithms/floyd-warshall/FWParallelThreads.jl")
 include("../src/algorithms/prims/nested/PrimsSequential.jl")
 include("../src/algorithms/prims/nested/PrimsParallel.jl")
 include("../src/algorithms/prims/vector/PrimsSequential.jl")
