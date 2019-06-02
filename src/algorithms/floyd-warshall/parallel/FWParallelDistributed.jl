@@ -1,8 +1,6 @@
 using Distributed
 using SharedArrays
 
-include("../../../util/Common.jl")
-
 function fwParallelDistributed(g)
     graph = copy(g)
 

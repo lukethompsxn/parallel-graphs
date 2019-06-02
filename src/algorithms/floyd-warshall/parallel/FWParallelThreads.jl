@@ -1,5 +1,3 @@
-include("../../../util/Common.jl")
-
 # Need to set JULIA_NUM_THREADS environment variable in the cmd window that opens julia.
 # See: https://docs.julialang.org/en/v1.0/manual/environment-variables/#JULIA_NUM_THREADS-1
 
@@ -27,8 +25,3 @@ function fwp(g)
 
     return graph
 end
-
-# g = parsefloyd("/Users/lukethompson/dev/uni/751-Project/res/generated/[digraph]-random-1000.dot")
-# @time fwp(g)
-
-

@@ -24,7 +24,3 @@ function fws(g)
 
     return graph
 end
-
-# g = parsefloyd("/Users/lukethompson/dev/uni/751-Project/res/generated/[digraph]-random-1000.dot")
-# @time fws(g)
-

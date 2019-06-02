@@ -1,9 +1,0 @@
-language: julia
-sudo: false
-os:
-  - linux
-notifications:
-  email: false
-
-script:
-  - julia -e 'Pkg.test("751-Project",coverage=true)'

@@ -134,4 +134,3 @@ end
 primstests()
 fwtests()
 println("\n##### RESULTS #####\n$(failed) tests failed out of $(total) tests")
-return failed > 0 ? 1 : 0
