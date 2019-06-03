@@ -1,28 +1,45 @@
-n = parse(Int64, ARGS[1])
+function writeGraph(size::Int)
+    nodes = []
+    edges = []
 
-nodes = []
-edges = []
+    for i in 1:size
+        push!(nodes, string(i, ";"))
 
-for i in 1:n
-    push!(nodes, string(i, ";"))
+        for j in i + 1:size
+            if j > i && rand() < 0.5 continue end
 
-    for j in i+1:n
-        if j > i && rand() < 0.5 continue end
+            push!(edges, string(i, " -- ", j, "\t[Weight=", trunc(Int, rand() * 900 ÷ 1 + 100), "];"))
+        end
+    end
 
-        push!(edges, string(i, " -- ", j, "\t[Weight=", trunc(Int, rand() * 900 ÷ 1 + 100), "];"))
+    open("res/generated/[graph]-random-$size.dot", "w") do file
+        write(file, "graph random-$size {\n")
+
+        for n in nodes
+            write(file, string("\t", size, "\n"))
+        end
+
+        for e in edges
+            write(file, string("\t", e, "\n"))
+        end
+
+        write(file, "}\n")
     end
 end
 
-open("res/generated/[graph]-random-$n.dot", "w") do file
-    write(file, "graph random-$n {\n")
+function generateGraph(size::Int, fillValue::Int, digraph::Bool)
+    graph = fill(fillValue, size, size)
+    for i in 1:size
+        start = digraph ? 0 : i
+        for j in start + 1:size
+            if j > start && rand() < 0.5 continue end
 
-    for n in nodes
-        write(file, string("\t", n, "\n"))
+            if digraph
+                graph[i, j] = trunc(Int, rand() * 900 ÷ 1 + 100)
+            else
+                graph[i, j] = graph[j, i] = trunc(Int, rand() * 900 ÷ 1 + 100)
+            end
+        end
     end
-
-    for e in edges
-        write(file, string("\t", e, "\n"))
-    end
-
-    write(file, "}\n")
+    graph
 end
