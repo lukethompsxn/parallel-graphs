@@ -4,15 +4,16 @@ using Dates
 
 include("../src/util/Common.jl")
 
-# include("../src/algorithms/prims/vector/PrimsSequential.jl")
-# include("../src/algorithms/prims/vector/PrimsSequentialNodes.jl")
-# include("../src/algorithms/prims/vector/PrimsParallel.jl")
-# include("../src/algorithms/prims/vector/PrimsParallelNodes.jl")
+include("../src/algorithms/prims/vector/PrimsSequential.jl")
+include("../src/algorithms/prims/vector/PrimsParallel.jl")
+include("../src/algorithms/prims/vector/PrimsParallelNodes.jl")
+include("../src/algorithms/prims/vector/PrimsSequentialNodes.jl")
+include("../src/algorithms/floyd-warshall/FWSequential.jl")
 include("../src/algorithms/floyd-warshall/parallel/FWParallelThreads.jl")
 include("../src/algorithms/floyd-warshall/parallel/FWParallelDistributed.jl")
-include("../src/algorithms/floyd-warshall/FWSequential.jl")
 
-function printResults(trial)
+function printResults(trial, title)
+    println("----------------------------------------\n$title\n")
     dump(trial)
 
     println("min: ", minimum(trial))
@@ -24,29 +25,98 @@ function printResults(trial)
     println("total samples: ", length(trial.times))
 end
 
-graph = parsefloyd(ARGS[1])
+if length(ARGS) < 1
+    println("Please specify graph to run algorithms on")
+    exit()
+end
 
-# sequential = @benchmark fws(graph) samples=50 seconds=120 evals=1
+graphName = ARGS[1]
+if !isfile(graphName)
+    println("$graphName does not exist, please specify another graph")
+    exit()
+end
 
-start = now()
-fws(graph)
-println("sequential finished in ", now() - start)
+if length(ARGS) > 1
+    algorithm = ARGS[2]
+    type = length(ARGS) > 2 ? ARGS[3] : nothing
 
-start = now()
-fwParallelDistributed(graph)
-println("parallel finished in ", now() - start)
+    # assigns various settings or their defaults
+    numSamples = "-s" in ARGS ? parse(Int64, ARGS[findfirst(d -> d == "-s", ARGS) + 1]) : 30
+    numSeconds = "-t" in ARGS ? parse(Int64, ARGS[findfirst(d -> d == "-t", ARGS) + 1]) : 300
+    numEvals = "-e" in ARGS ? parse(Int64, ARGS[findfirst(d -> d == "-e", ARGS) + 1]) : 1
 
-# sequentialNodes = @benchmark primsN(graph) samples=50 seconds=120 evals=1
+    if algorithm == "prims"
+        graph = parseprims(graphName)
 
-# println(now())
-# printResults(sequentialNodes)
-# println(now())
+        if type == "nodes"
+            println("Started benchmarking sequential prims: ", now())
+            sequential = @benchmark vector_prims_sequential_nodes(copy(graph)) samples=numSamples seconds=numSeconds evals=numEvals
+            println("Started benchmarking parallel prims: ", now())
+            parallel = @benchmark vector_prims_parallel_nodes(copy(graph)) samples=numSamples seconds=numSeconds evals=numEvals
+        else
+            println("Started benchmarking sequential prims: ", now())
+            sequential = @benchmark vector_prims_sequential(copy(graph)) samples=numSamples seconds=numSeconds evals=numEvals
+            println("Started benchmarking parallel prims: ", now())
+            parallel = @benchmark vector_prims_parallel(copy(graph)) samples=numSamples seconds=numSeconds evals=numEvals
+        end
+    elseif algorithm == "floyds"
+        if type == nothing || type != "threads" && type != "distributed"
+            println("Please specify parallel implementation\n\tthreads for @threads, distributed for @distributed")
+            exit()
+        end
 
-# parallel = @benchmark fwp(graph) samples=50 seconds=120 evals=1
+        graph = parsefloyd(graphName)
 
+        println("Started benchmarking sequential floyds: ", now())
+        sequential = @benchmark fws(copy(graph)) samples=numSamples seconds=numSeconds evals=numEvals
 
+        println("Started benchmarking parallel floyds: ", now())
+        if type == "threads"
+            parallel = @benchmark fwp(copy(graph)) samples=numSamples seconds=numSeconds evals=numEvals
+        elseif type == "distributed"
+            #output incorrect
+            parallel = @benchmark fwParallelDistributed(copy(graph)) samples=numSamples seconds=numSeconds evals=numEvals
+        end
+    else
+        println("Please specify algorithm\n",
+        "\tprims - minimum spanning tree\n",
+        "\tfloyds - floyd-warshall all (shortest) path costs")
+        exit()
+    end
 
-# parallelNodes = @benchmark primsPN(graph) samples=50 seconds=120 evals=1
+    println("All benchmarks completed\n",
+    "----------------------------------------\n",
+    "\nResults\n")
 
-# println(now())
-# printResults(parallelNodes)
+    printResults(sequential, "Sequential")
+    printResults(parallel, "Parallel")
+else
+    println("Started benchmarking sequential prims: ", now())
+    sequential = @benchmark vector_prims_sequential_nodes(copy(graph)) samples=numSamples seconds=numSeconds evals=numEvals
+    printResults(sequential, "Sequential")
+
+    println("Started benchmarking parallel prims: ", now())
+    parallel = @benchmark vector_prims_parallel_nodes(copy(graph)) samples=numSamples seconds=numSeconds evals=numEvals
+    printResults(parallel, "Parallel")
+
+    println("Started benchmarking sequential prims: ", now())
+    sequential = @benchmark vector_prims_sequential(copy(graph)) samples=numSamples seconds=numSeconds evals=numEvals
+    printResults(sequential, "Sequential")
+
+    println("Started benchmarking parallel prims: ", now())
+    parallel = @benchmark vector_prims_parallel(copy(graph)) samples=numSamples seconds=numSeconds evals=numEvals
+    printResults(parallel, "Parallel")
+
+    println("Started benchmarking sequential floyds: ", now())
+    sequential = @benchmark fws(copy(graph)) samples=numSamples seconds=numSeconds evals=numEvals
+    printResults(sequential, "Sequential")
+
+    println("Started benchmarking parallel floyds threaded: ", now())
+    parallel = @benchmark fwp(copy(graph)) samples=numSamples seconds=numSeconds evals=numEvals
+    printResults(parallel, "Parallel")
+
+    #output incorrect
+    println("Started benchmarking parallel floyds distributed: ", now())
+    parallel = @benchmark fwParallelDistributed(copy(graph)) samples=numSamples seconds=numSeconds evals=numEvals
+    printResults(parallel, "Parallel")
+end

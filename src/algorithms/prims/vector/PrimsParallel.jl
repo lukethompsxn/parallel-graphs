@@ -56,5 +56,7 @@ function vector_prims_parallel(g)
         mst[index[2], index[1]] = graph[index]
     end
 
+    rmprocs(workers())
+
     return mst
 end

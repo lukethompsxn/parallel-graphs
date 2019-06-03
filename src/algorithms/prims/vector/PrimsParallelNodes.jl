@@ -10,7 +10,7 @@ function cheapestNodePN(distanceVector, nodes)
 end
 
 function updateVectorPN(newNode, nodes, distanceVector, addedBy, graph)
-    @sync @distributed for i = 1:length(graph[1,:])
+    for i = 1:length(graph[1,:])
         if in(i, nodes) && graph[newNode, i] != -1 && graph[newNode, i] < distanceVector[i]
             distanceVector[i] = graph[newNode, i]
             addedBy[i] = newNode
@@ -28,8 +28,8 @@ function vector_prims_parallel_nodes(g)
     
     addprocs(4)
     
-    dist = SharedArray(fill(typemax(UInt32), len))
-    addedBy = SharedArray(fill(-1, len))
+    dist = fill(typemax(UInt32), len)
+    addedBy = fill(-1, len)
     
     nodes = Set(1:len)
     mst = fill(-1, len, len)
@@ -48,6 +48,8 @@ function vector_prims_parallel_nodes(g)
         mst[index[1], index[2]] = graph[index]
         mst[index[2], index[1]] = graph[index]
     end
+
+    rmprocs(workers())
 
     return mst
 end
