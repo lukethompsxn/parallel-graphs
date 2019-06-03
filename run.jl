@@ -24,7 +24,7 @@ if length(ARGS) > 1
     type = length(ARGS) > 2 ? ARGS[3] : nothing
 
     # assigns various settings or their defaults
-    parallel = "-p" in ARGS ? ARGS[findfirst(d -> d == "-p", ARGS) + 1] == "true" : false
+    parallel = "-p" in ARGS
 
     if algorithm == "prims"
         graph = parseprims(graphName)
