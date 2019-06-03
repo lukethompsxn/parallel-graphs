@@ -31,6 +31,10 @@ if length(ARGS) < 1
 end
 
 graphName = ARGS[1]
+if !isfile(graphName)
+    println("$graphName does not exist, please specify another graph")
+    exit()
+end
 
 if length(ARGS) > 1
     algorithm = ARGS[2]
