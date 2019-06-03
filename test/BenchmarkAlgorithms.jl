@@ -5,12 +5,12 @@ using Dates
 include("../src/util/Common.jl")
 
 include("../src/algorithms/prims/vector/PrimsSequential.jl")
-include("../src/algorithms/prims/vector/PrimsSequentialNodes.jl")
 include("../src/algorithms/prims/vector/PrimsParallel.jl")
 include("../src/algorithms/prims/vector/PrimsParallelNodes.jl")
+include("../src/algorithms/prims/vector/PrimsSequentialNodes.jl")
+include("../src/algorithms/floyd-warshall/FWSequential.jl")
 include("../src/algorithms/floyd-warshall/parallel/FWParallelThreads.jl")
 include("../src/algorithms/floyd-warshall/parallel/FWParallelDistributed.jl")
-include("../src/algorithms/floyd-warshall/FWSequential.jl")
 
 function printResults(trial, title)
     println("----------------------------------------\n$title\n")
@@ -70,6 +70,7 @@ if length(ARGS) > 1
         if type == "threads"
             parallel = @benchmark fwp(copy(graph)) samples=numSamples seconds=numSeconds evals=numEvals
         elseif type == "distributed"
+            #output incorrect
             parallel = @benchmark fwParallelDistributed(copy(graph)) samples=numSamples seconds=numSeconds evals=numEvals
         end
     else
@@ -110,6 +111,7 @@ else
     parallel = @benchmark fwp(copy(graph)) samples=numSamples seconds=numSeconds evals=numEvals
     printResults(parallel, "Parallel")
 
+    #output incorrect
     println("Started benchmarking parallel floyds distributed: ", now())
     parallel = @benchmark fwParallelDistributed(copy(graph)) samples=numSamples seconds=numSeconds evals=numEvals
     printResults(parallel, "Parallel")
