@@ -16,7 +16,7 @@ function writeGraph(size::Int)
         write(file, "graph random-$size {\n")
 
         for n in nodes
-            write(file, string("\t", size, "\n"))
+            write(file, string("\t", n, "\n"))
         end
 
         for e in edges
